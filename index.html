@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘의 핵심 이슈 26 — 국내·세계·코인·보험·날씨</title>
+  <meta name="description" content="국내/세계 경제·기업 이슈, 코인, 보험 뉴스와 오늘의 날씨를 중요도+최신성 기준으로 정렬해 보여주는 대시보드" />
+  <style>
+    :root {
+      --bg:#0b1220; --text:#eef3ff; --muted:#96a6c6; --border:rgba(255,255,255,0.08);
+      --accent:#81a7ff; --accent2:#a7c1ff;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,'Noto Sans KR','Apple SD Gothic Neo',sans-serif}
+    header{padding:24px 18px 8px;max-width:1120px;margin:0 auto}
+    h1{margin:0;font-size:22px;letter-spacing:-0.3px}
+    .sub{color:var(--muted);font-size:13px;margin-top:6px}
+    .btns{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+    button{background:#1b2742;color:#cfe0ff;border:1px solid #31405f;border-radius:10px;padding:8px 12px;cursor:pointer}
+    button:hover{filter:brightness(1.1)}
+    main{padding:10px 12px 48px;max-width:1120px;margin:0 auto}
+    section{margin-top:18px}
+    .sec-head{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 10px}
+    .sec-title{font-weight:700;font-size:15px;color:var(--text);letter-spacing:-0.2px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));
+      border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;gap:8px;flex-direction:column;min-height:128px}
+    .card.domestic{background:linear-gradient(180deg,rgba(68,116,255,0.10),rgba(255,255,255,0.02));border-color:rgba(129,167,255,0.35)}
+    .card.global{background:linear-gradient(180deg,rgba(115,171,255,0.10),rgba(255,255,255,0.02));border-color:rgba(129,167,255,0.28)}
+    .card.crypto{background:linear-gradient(180deg,rgba(136,182,255,0.10),rgba(255,255,255,0.02));border-color:rgba(129,167,255,0.22)}
+    .card.ins{background:linear-gradient(180deg,rgba(153,191,255,0.10),rgba(255,255,255,0.02));border-color:rgba(129,167,255,0.22)}
+    .card.weather{background:linear-gradient(180deg,rgba(129,167,255,0.18),rgba(129,167,255,0.06));border-color:rgba(129,167,255,0.35)}
+    .kicker{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    .title a{color:var(--text);text-decoration:none}
+    .title a:hover{color:var(--accent)}
+    .title{font-size:16px;line-height:1.35;margin:0}
+    .summary{font-size:13px;color:#dbe6ff}
+    .meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.08);color:var(--muted)}
+    .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .stars{letter-spacing:1px}
+    .temp{font-size:28px;font-weight:700;letter-spacing:-0.5px}
+    footer{text-align:center;color:var(--muted);font-size:12px;padding:18px 0 30px}
+    .error{color:#ff9ca0;font-size:13px;margin-top:6px}
+    .dup{border-color:#ffcf7a !important; box-shadow:0 0 0 1px rgba(255,207,122,0.25) inset}
+    .label-dup{background:#3b2b12;color:#ffd47f}
+    .label-top{background:#1d2b4f;color:#bcd2ff}
+    .hide{display:none}
+    .source{max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>오늘의 핵심 이슈 26</h1>
+    <div class="sub" id="subtitle">최신 정보 불러오는 중…</div>
+    <div class="btns">
+      <button id="refreshBtn">새로고침</button>
+      <button id="seoulBtn">서울 기준 보기</button>
+      <button id="toggleDupBtn">중복 이슈만 보기</button>
+    </div>
+  </header>
+  <main>
+    <section id="sec-domestic">
+      <div class="sec-head"><div class="sec-title">국내 경제·기업 이슈 Top 10</div></div>
+      <div class="grid" data-sec="domestic"></div>
+    </section>
+    <section id="sec-global">
+      <div class="sec-head"><div class="sec-title">세계 경제·기업 이슈 Top 5</div></div>
+      <div class="grid" data-sec="global"></div>
+    </section>
+    <section id="sec-weather">
+      <div class="sec-head"><div class="sec-title">오늘의 날씨</div></div>
+      <div class="grid" data-sec="weather"></div>
+    </section>
+    <section id="sec-crypto">
+      <div class="sec-head"><div class="sec-title">코인 관련 이슈 Top 5</div></div>
+      <div class="grid" data-sec="crypto"></div>
+    </section>
+    <section id="sec-ins">
+      <div class="sec-head"><div class="sec-title">보험 관련 이슈 Top 5</div></div>
+      <div class="grid" data-sec="ins"></div>
+    </section>
+  </main>
+  <footer>ⓘ 열 때마다 자동으로 최신 데이터가 로드됩니다. (KST 기준)</footer>
+
+<script>
+(function(){
+  const KST_TZ = 'Asia/Seoul';
+  const cardsBySec = {
+    domestic: document.querySelector('[data-sec="domestic"]'),
+    global: document.querySelector('[data-sec="global"]'),
+    crypto: document.querySelector('[data-sec="crypto"]'),
+    ins: document.querySelector('[data-sec="ins"]'),
+    weather: document.querySelector('[data-sec="weather"]'),
+  };
+  const subtitle = document.getElementById('subtitle');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const seoulBtn = document.getElementById('seoulBtn');
+  const toggleDupBtn = document.getElementById('toggleDupBtn');
+  let showDupOnly = false;
+
+  function kstNow() {
+    const now = new Date();
+    const kst = new Date(now.toLocaleString('en-US', { timeZone: KST_TZ }));
+    return kst;
+  }
+  function formatKST(dt) {
+    const pad = n => String(n).padStart(2,'0');
+    return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())} ${pad(dt.getHours())}:${pad(dt.getMinutes())} KST`;
+  }
+  function updateSubtitle() {
+    subtitle.textContent = `업데이트: ${formatKST(kstNow())}`;
+  }
+
+  // Importance scoring helpers
+  const SOURCE_TRUST = {
+    '연합뉴스': 1.0, '매일경제': 0.95, '한국경제': 0.95, '조선비즈': 0.9, '서울경제': 0.9,
+    '블룸버그': 1.0, '로이터': 1.0, 'CNBC': 0.95, 'FT': 0.95, 'WSJ': 0.95,
+  };
+  const KEYWORD_WEIGHTS = [
+    ['긴급', 10], ['속보', 10], ['폭락', 8], ['급등', 8], ['사상 최대', 8], ['최저', 6],
+    ['금리', 8], ['기준금리', 10], ['환율', 8], ['물가', 7], ['코스피', 6], ['코스닥', 5],
+    ['연준', 8], ['BOJ', 7], ['ECB', 7],
+    ['삼성', 8], ['LG', 6], ['현대', 6], ['SK', 6],
+    ['구조조정', 7], ['적자', 6], ['흑자', 6], ['실적', 6], ['인수', 7], ['합병', 7],
+    ['규제', 6], ['정부', 6], ['발표', 5]
+  ];
+  const SECTOR_WEIGHTS = {
+    domestic: 1.0, global: 1.0, crypto: 0.9, ins: 0.9
+  };
+
+  function scoreImportance(item, section) {
+    const now = new Date();
+    const pub = item.pubDate ? new Date(item.pubDate) : null;
+    const hoursOld = pub ? Math.max(0, (now - pub) / 36e5) : 999;
+    // base from source
+    let score = 40 * (SOURCE_TRUST[item.source] || 0.7);
+    // keyword influence
+    const title = (item.title || '').toLowerCase();
+    KEYWORD_WEIGHTS.forEach(([kw, w]) => {
+      if (title.includes(kw.toLowerCase())) score += w;
+    });
+    // sector impact
+    score += 10 * (SECTOR_WEIGHTS[section] || 0.8);
+    // recency bonus
+    if (hoursOld <= 6) score += 20;
+    else if (hoursOld <= 12) score += 10;
+    else if (hoursOld <= 24) score += 5;
+    // clamp
+    return Math.max(0, Math.min(100, Math.round(score)));
+  }
+
+  // Duplicate detection (simple): normalize title and compute a key
+  function dupKey(title) {
+    return (title || '').toLowerCase()
+      .replace(/[^\w가-힣 ]+/g, ' ')
+      .replace(/\b(단독|속보|영상|종합|update|reuters|bloomberg|ft|wsj)\b/gi, '')
+      .replace(/\s+/g, ' ').trim();
+  }
+
+  function summarize(descText, maxLen=140) {
+    if (!descText) return '';
+    // crude strip html
+    const text = descText.replace(/<[^>]+>/g,'').replace(/&[^;]+;/g,' ').trim();
+    // simple sentence-ish cut
+    if (text.length <= maxLen) return text;
+    return text.slice(0, maxLen-1) + '…';
+  }
+
+  function makeCard(item, section, isDup=false, stars=0) {
+    const grid = cardsBySec[section];
+    const card = document.createElement('div');
+    card.className = `card ${section}` + (isDup ? ' dup' : '');
+    const starStr = '★★★★★'.slice(0, Math.round(stars)) + '☆☆☆☆☆'.slice(0, 5-Math.round(stars));
+    card.innerHTML = `
+      <div class="kicker">${section.toUpperCase()} ${isDup?'<span class="badge label-dup">중복</span>':''}</div>
+      <div class="title"><a href="${item.link}" target="_blank" rel="noopener">${item.title || '제목 없음'}</a></div>
+      <div class="summary">${item.summary || ''}</div>
+      <div class="meta">
+        <span class="badge source">${item.source || '언론사'}</span>
+        ${item.pubDate ? `<span>${new Date(item.pubDate).toLocaleString('ko-KR')}</span>`:''}
+        <span class="badge">중요도 ${item.score}</span>
+        <span class="badge stars">${starStr}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+    card.dataset.dup = isDup ? '1' : '0';
+  }
+
+  async function fetchRSS(query, hl='ko', gl='KR', ceid='KR:ko', limit=20) {
+    const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${hl}&gl=${gl}&ceid=${ceid}`;
+    const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rssUrl);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('RSS 로드 실패');
+    const xmlText = await res.text();
+    const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+    const items = Array.from(xml.querySelectorAll('item')).slice(0, limit).map(node => {
+      return {
+        title: node.querySelector('title')?.textContent?.replace(' - Google News','') || '',
+        link: node.querySelector('link')?.textContent || '#',
+        source: node.querySelector('source')?.textContent || '',
+        pubDate: node.querySelector('pubDate')?.textContent || '',
+        summary: summarize(node.querySelector('description')?.textContent || '')
+      };
+    });
+    return items;
+  }
+
+  async function fetchWeather(lat, lon) {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FSeoul`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('날씨 API 오류');
+    const data = await res.json();
+    const tmax = Math.round(data.daily.temperature_2m_max[0]);
+    const tmin = Math.round(data.daily.temperature_2m_min[0]);
+    const pop = data.daily.precipitation_probability_max[0];
+    const wc = data.daily.weathercode[0];
+    const map = {0:'맑음',1:'대체로 맑음',2:'부분적 구름',3:'흐림',45:'안개',48:'상고대',51:'이슬비 약',53:'이슬비',55:'이슬비 강',61:'비 약',63:'비',65:'폭우',71:'눈 약',73:'눈',75:'폭설',80:'소나기 약',81:'소나기',82:'강한 소나기',95:'뇌우',96:'우박 동반 뇌우'};
+    const summary = map[wc] || '날씨';
+    const grid = cardsBySec.weather;
+    const card = document.createElement('div');
+    card.className = 'card weather';
+    card.innerHTML = `
+      <div class="kicker">WEATHER</div>
+      <div class="title"><a href="https://www.meteologix.com/kr/weather/now/seoul" target="_blank" rel="noopener">${summary} · ${tmin}° / ${tmax}°</a></div>
+      <div class="summary">강수확률 ${pop}% · 체감/습도는 시간대별로 상이. 상세는 링크에서 확인.</div>
+      <div class="meta"><span class="badge">위치 ${lat.toFixed(2)}, ${lon.toFixed(2)}</span></div>
+    `;
+    grid.appendChild(card);
+  }
+
+  function renderList(items, section, keep=10) {
+    // scoring
+    items.forEach(it => it.score = scoreImportance(it, section));
+    // duplication map
+    const map = new Map();
+    items.forEach(it => {
+      const key = dupKey(it.title);
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(it);
+    });
+    // mark duplicates and add small boost
+    const dupKeys = new Set([...map.entries()].filter(([k, arr]) => arr.length >= 2).map(([k]) => k));
+    items.forEach(it => {
+      const key = dupKey(it.title);
+      it.isDup = dupKeys.has(key);
+      if (it.isDup) it.score += 5;
+    });
+    // final sort by score desc then recency
+    items.sort((a,b) => b.score - a.score || new Date(b.pubDate) - new Date(a.pubDate));
+    const top = items.slice(0, keep);
+    // render
+    const grid = cardsBySec[section];
+    grid.innerHTML = '';
+    top.forEach(it => {
+      const stars = (it.score / 20); // 0~5
+      makeCard(it, section, it.isDup, stars);
+    });
+  }
+
+  function setDupFilter(on) {
+    showDupOnly = on;
+    toggleDupBtn.textContent = on ? '전체 보기' : '중복 이슈만 보기';
+    document.querySelectorAll('.card').forEach(c => {
+      if (!c.className.includes('weather')) {
+        const isDup = c.dataset.dup === '1';
+        c.classList.toggle('hide', on && !isDup);
+      }
+    });
+  }
+
+  async function loadAll({forceSeoul=false}={}) {
+    updateSubtitle();
+    // clear all sections
+    Object.values(cardsBySec).forEach(g => g.innerHTML = '');
+
+    // Weather first
+    let lat = 37.5665, lon = 126.9780; // Seoul fallback
+    if (!forceSeoul && navigator.geolocation) {
+      try {
+        const pos = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 4000});
+        });
+        lat = pos.coords.latitude; lon = pos.coords.longitude;
+      } catch(_) {}
+    }
+    await fetchWeather(lat, lon);
+
+    // Queries
+    const Q = {
+      domestic: '(경제 OR 증시 OR 환율 OR 금리 OR 물가 OR 정부 OR 삼성 OR LG OR 현대 OR SK) -스포츠',
+      global: '(세계 경제 OR 글로벌 OR 연준 OR 중국 경기 OR 일본 BOJ OR ECB OR 무역) -스포츠',
+      crypto: '(비트코인 OR 이더리움 OR 암호화폐 OR 코인 OR 블록체인) -스포츠',
+      ins: '(보험 OR 손해보험 OR 생명보험 OR 보험료 OR 지급여력 OR 민원) -스포츠'
+    };
+
+    try {
+      const [dom, glo, cr, ins] = await Promise.all([
+        fetchRSS(Q.domestic, 'ko','KR','KR:ko', 30),
+        fetchRSS(Q.global, 'ko','KR','KR:ko', 25),
+        fetchRSS(Q.crypto, 'ko','KR','KR:ko', 25),
+        fetchRSS(Q.ins, 'ko','KR','KR:ko', 25),
+      ]);
+      renderList(dom, 'domestic', 10);
+      renderList(glo, 'global', 5);
+      renderList(cr, 'crypto', 5);
+      renderList(ins, 'ins', 5);
+    } catch(e) {
+      console.error(e);
+      Object.entries(cardsBySec).forEach(([sec, grid]) => {
+        if (sec==='weather') return;
+        if (!grid.innerHTML) grid.innerHTML = `<div class="card"><div class="kicker">${sec.toUpperCase()}</div><div class="title">불러오기 실패</div><div class="summary">${e.message||'네트워크 오류'}</div></div>`;
+      });
+    }
+  }
+
+  refreshBtn.addEventListener('click', () => loadAll());
+  seoulBtn.addEventListener('click', () => loadAll({forceSeoul:true}));
+  toggleDupBtn.addEventListener('click', () => setDupFilter(!showDupOnly));
+
+  // Initial
+  loadAll();
+})();
+</script>
+</body>
+</html>
