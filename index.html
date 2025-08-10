@@ -8,8 +8,22 @@
   <meta name="description" content="국내/세계 경제·기업 이슈, 코인, 보험 뉴스와 오늘의 날씨를 중요도+최신성 기준으로 정렬해 보여주는 대시보드" />
   <style>
     :root {
-      --bg:#0b1220; --text:#eef3ff; --muted:#96a6c6; --border:rgba(255,255,255,0.08);
-      --accent:#81a7ff; --accent2:#a7c1ff;
+      /* 밝은 테마 색상 */
+      --bg:#f6f8ff; 
+      --text:#1b2735; 
+      --muted:#5b6b86; 
+      --border:#e3e9ff;
+      --accent:#335eea; 
+      --accent-soft:#e8efff;
+
+      --card:#ffffff;
+      --domestic:#eef4ff;
+      --global:#f2f6ff;
+      --crypto:#f5f8ff;
+      --ins:#f6f8ff;
+      --weather:#eef4ff;
+
+      --dup:#f0a400;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
@@ -18,35 +32,47 @@
     h1{margin:0;font-size:22px;letter-spacing:-0.3px}
     .sub{color:var(--muted);font-size:13px;margin-top:6px}
     .btns{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
-    button{background:#1b2742;color:#cfe0ff;border:1px solid #31405f;border-radius:10px;padding:8px 12px;cursor:pointer}
-    button:hover{filter:brightness(1.1)}
+    button{background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:10px;padding:8px 12px;cursor:pointer}
+    button:hover{filter:brightness(1.05)}
     main{padding:10px 12px 48px;max-width:1120px;margin:0 auto}
     section{margin-top:18px}
     .sec-head{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 10px}
     .sec-title{font-weight:700;font-size:15px;color:var(--text);letter-spacing:-0.2px}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));
-      border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;gap:8px;flex-direction:column;min-height:128px}
-    .card.domestic{background:linear-gradient(180deg,rgba(68,116,255,0.10),rgba(255,255,255,0.02));border-color:rgba(129,167,255,0.35)}
-    .card.global{background:linear-gradient(180deg,rgba(115,171,255,0.10),rgba(255,255,255,0.02));border-color:rgba(129,167,255,0.28)}
-    .card.crypto{background:linear-gradient(180deg,rgba(136,182,255,0.10),rgba(255,255,255,0.02));border-color:rgba(129,167,255,0.22)}
-    .card.ins{background:linear-gradient(180deg,rgba(153,191,255,0.10),rgba(255,255,255,0.02));border-color:rgba(129,167,255,0.22)}
-    .card.weather{background:linear-gradient(180deg,rgba(129,167,255,0.18),rgba(129,167,255,0.06));border-color:rgba(129,167,255,0.35)}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      display:flex;gap:8px;flex-direction:column;min-height:128px;
+      box-shadow:0 6px 14px rgba(21,31,58,.05);
+    }
+    .card.domestic{background:linear-gradient(180deg,var(--domestic),#fff)}
+    .card.global{background:linear-gradient(180deg,var(--global),#fff)}
+    .card.crypto{background:linear-gradient(180deg,var(--crypto),#fff)}
+    .card.ins{background:linear-gradient(180deg,var(--ins),#fff)}
+    .card.weather{background:linear-gradient(180deg,var(--weather),#fff)}
     .kicker{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
     .title a{color:var(--text);text-decoration:none}
     .title a:hover{color:var(--accent)}
-    .title{font-size:16px;line-height:1.35;margin:0}
-    .summary{font-size:13px;color:#dbe6ff}
+    .title{font-size:16px;line-height:1.4;margin:0}
+    .summary{
+      font-size:13px;color:#2d3a4e;
+      display:-webkit-box;
+      -webkit-line-clamp:2; /* 한 줄 더 늘림: 2줄 */
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
     .meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.08);color:var(--muted)}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;background:var(--accent-soft);color:var(--muted);border:1px solid var(--border)}
     .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .stars{letter-spacing:1px}
+    .stars{letter-spacing:1px;color:#e2ad00}
     .temp{font-size:28px;font-weight:700;letter-spacing:-0.5px}
     footer{text-align:center;color:var(--muted);font-size:12px;padding:18px 0 30px}
-    .error{color:#ff9ca0;font-size:13px;margin-top:6px}
-    .dup{border-color:#ffcf7a !important; box-shadow:0 0 0 1px rgba(255,207,122,0.25) inset}
-    .label-dup{background:#3b2b12;color:#ffd47f}
-    .label-top{background:#1d2b4f;color:#bcd2ff}
+    .error{color:#b20000;font-size:13px;margin-top:6px}
+    .dup{border-color:#ffd58a !important; box-shadow:0 0 0 1px rgba(255,213,138,0.6) inset}
+    .label-dup{background:#fff1d6;color:#8a5a00;border:1px solid #ffd58a}
+    .label-top{background:#e8efff;color:#2d3a4e;border:1px solid var(--border)}
     .hide{display:none}
     .source{max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   </style>
@@ -160,11 +186,10 @@
       .replace(/\s+/g, ' ').trim();
   }
 
-  function summarize(descText, maxLen=140) {
+  function summarize(descText, maxLen=220) { // 기존 140 → 220 (두 줄 내외)
     if (!descText) return '';
-    // crude strip html
+    // strip html
     const text = descText.replace(/<[^>]+>/g,'').replace(/&[^;]+;/g,' ').trim();
-    // simple sentence-ish cut
     if (text.length <= maxLen) return text;
     return text.slice(0, maxLen-1) + '…';
   }
@@ -208,29 +233,6 @@
     return items;
   }
 
-  async function fetchWeather(lat, lon) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FSeoul`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('날씨 API 오류');
-    const data = await res.json();
-    const tmax = Math.round(data.daily.temperature_2m_max[0]);
-    const tmin = Math.round(data.daily.temperature_2m_min[0]);
-    const pop = data.daily.precipitation_probability_max[0];
-    const wc = data.daily.weathercode[0];
-    const map = {0:'맑음',1:'대체로 맑음',2:'부분적 구름',3:'흐림',45:'안개',48:'상고대',51:'이슬비 약',53:'이슬비',55:'이슬비 강',61:'비 약',63:'비',65:'폭우',71:'눈 약',73:'눈',75:'폭설',80:'소나기 약',81:'소나기',82:'강한 소나기',95:'뇌우',96:'우박 동반 뇌우'};
-    const summary = map[wc] || '날씨';
-    const grid = cardsBySec.weather;
-    const card = document.createElement('div');
-    card.className = 'card weather';
-    card.innerHTML = `
-      <div class="kicker">WEATHER</div>
-      <div class="title"><a href="https://www.meteologix.com/kr/weather/now/seoul" target="_blank" rel="noopener">${summary} · ${tmin}° / ${tmax}°</a></div>
-      <div class="summary">강수확률 ${pop}% · 체감/습도는 시간대별로 상이. 상세는 링크에서 확인.</div>
-      <div class="meta"><span class="badge">위치 ${lat.toFixed(2)}, ${lon.toFixed(2)}</span></div>
-    `;
-    grid.appendChild(card);
-  }
-
   function renderList(items, section, keep=10) {
     // scoring
     items.forEach(it => it.score = scoreImportance(it, section));
@@ -260,21 +262,33 @@
     });
   }
 
-  function setDupFilter(on) {
-    showDupOnly = on;
-    toggleDupBtn.textContent = on ? '전체 보기' : '중복 이슈만 보기';
-    document.querySelectorAll('.card').forEach(c => {
-      if (!c.className.includes('weather')) {
-        const isDup = c.dataset.dup === '1';
-        c.classList.toggle('hide', on && !isDup);
-      }
-    });
+  async function fetchWeather(lat, lon) {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FSeoul`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('날씨 API 오류');
+    const data = await res.json();
+    const tmax = Math.round(data.daily.temperature_2m_max[0]);
+    const tmin = Math.round(data.daily.temperature_2m_min[0]);
+    const pop = data.daily.precipitation_probability_max[0];
+    const wc = data.daily.weathercode[0];
+    const map = {0:'맑음',1:'대체로 맑음',2:'부분적 구름',3:'흐림',45:'안개',48:'상고대',51:'이슬비 약',53:'이슬비',55:'이슬비 강',61:'비 약',63:'비',65:'폭우',71:'눈 약',73:'눈',75:'폭설',80:'소나기 약',81:'소나기',82:'강한 소나기',95:'뇌우',96:'우박 동반 뇌우'};
+    const summary = map[wc] || '날씨';
+    const grid = cardsBySec.weather;
+    const card = document.createElement('div');
+    card.className = 'card weather';
+    card.innerHTML = `
+      <div class="kicker">WEATHER</div>
+      <div class="title"><a href="https://www.meteologix.com/kr/weather/now/seoul" target="_blank" rel="noopener">${summary} · ${tmin}° / ${tmax}°</a></div>
+      <div class="summary">강수확률 ${pop}% · 위치 ${lat.toFixed(2)}, ${lon.toFixed(2)}</div>
+      <div class="meta"><span class="badge">Open‑Meteo</span></div>
+    `;
+    grid.appendChild(card);
   }
 
   async function loadAll({forceSeoul=false}={}) {
     updateSubtitle();
     // clear all sections
-    Object.values(cardsBySec).forEach(g => g.innerHTML = '');
+    Object.values(cardsBySec).forEach(g => g.innerHTML = '<div class="card" style="opacity:.7">불러오는 중…</div>');
 
     // Weather first
     let lat = 37.5665, lon = 126.9780; // Seoul fallback
@@ -286,6 +300,8 @@
         lat = pos.coords.latitude; lon = pos.coords.longitude;
       } catch(_) {}
     }
+    // replace loading with actual weather
+    cardsBySec.weather.innerHTML = '';
     await fetchWeather(lat, lon);
 
     // Queries
@@ -311,14 +327,23 @@
       console.error(e);
       Object.entries(cardsBySec).forEach(([sec, grid]) => {
         if (sec==='weather') return;
-        if (!grid.innerHTML) grid.innerHTML = `<div class="card"><div class="kicker">${sec.toUpperCase()}</div><div class="title">불러오기 실패</div><div class="summary">${e.message||'네트워크 오류'}</div></div>`;
+        grid.innerHTML = `<div class="card"><div class="kicker">${sec.toUpperCase()}</div><div class="title">불러오기 실패</div><div class="summary">${e.message||'네트워크 오류'}</div></div>`;
       });
     }
   }
 
   refreshBtn.addEventListener('click', () => loadAll());
   seoulBtn.addEventListener('click', () => loadAll({forceSeoul:true}));
-  toggleDupBtn.addEventListener('click', () => setDupFilter(!showDupOnly));
+  toggleDupBtn.addEventListener('click', () => {
+    showDupOnly = !showDupOnly;
+    toggleDupBtn.textContent = showDupOnly ? '전체 보기' : '중복 이슈만 보기';
+    document.querySelectorAll('.card').forEach(c => {
+      if (!c.classList.contains('weather')) {
+        const isDup = c.classList.contains('dup');
+        c.classList.toggle('hide', showDupOnly && !isDup);
+      }
+    });
+  });
 
   // Initial
   loadAll();
